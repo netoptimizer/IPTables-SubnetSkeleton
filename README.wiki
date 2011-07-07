@@ -15,18 +15,16 @@ for IPTables::libiptc.
 == Links ==
 
 The code for this module is hosted at GitHub:
-
- [https://github.com/netoptimizer/IPTables-SubnetSkeleton]
+[https://github.com/netoptimizer/IPTables-SubnetSkeleton]
 
 Presentation: Making large iptables rulesets scale
-
- [http://slidesha.re/hRTKSR]
+[http://slidesha.re/hRTKSR]
 
 Depend on CPAN module IPTables::libiptc:
- [http://search.cpan.org/perldoc?IPTables::libiptc]
+[http://search.cpan.org/perldoc?IPTables::libiptc]
 
- Code: [https://github.com/netoptimizer/CPAN-IPTables-libiptc]
-
+Code:
+[https://github.com/netoptimizer/CPAN-IPTables-libiptc]
 
 
 == COPYRIGHT AND LICENCE ==
