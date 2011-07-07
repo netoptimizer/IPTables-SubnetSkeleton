@@ -18,7 +18,7 @@ BEGIN {
      our ($VERSION, @ISA, @EXPORT, @EXPORT_OK, %EXPORT_TAGS);
 
      # Package version
-     $VERSION     = 0.3;
+     $VERSION     = 0.3001;
 
      @ISA         = qw(Exporter);
      @EXPORT      = qw(&insert_element &print_cidr_breaks &connect_to

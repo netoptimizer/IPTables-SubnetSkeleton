@@ -26,7 +26,7 @@ BEGIN {
      our ($VERSION, @ISA, @EXPORT, @EXPORT_OK, %EXPORT_TAGS);
 
      # Package version
-     $VERSION     = 0.01;
+     $VERSION     = 0.3001;
 
      @ISA         = qw(Exporter);
      @EXPORT      =
