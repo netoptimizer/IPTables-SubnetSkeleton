@@ -533,34 +533,46 @@ developed in order to cut down on the number of lookups.
 
 =head1 SYNOPSIS
 
- use IPTables::SubnetSkeleton;
-
- my @netmasks = (8, 18, 20, 22, 24, 26, 28);
-
- $subnet_src =
-   IPTables::SubnetSkeleton::new("shortname", "src", "filter", @netmasks);
-
- $subnet_dst =
-   IPTables::SubnetSkeleton::new("shortname", "dst", "filter", @netmasks);
-
- # Connect subnet skeleton to build-in chain "FORWARD".
- $subnet_src->connect_to("FORWARD");
- $subnet_dst->connect_to("FORWARD");
-
- # SubnetSkeleton: Add a IP match that will jump to $userchain
- $subnet_src->insert_element("$IP", "$userchain");
- $subnet_dst->insert_element("$IP", "$userchain");
-
- # Remember to commit iptables changes to kernel
- $subnet_src->iptables_commit();
+  use Log::Log4perl qw(:easy); Log::Log4perl->easy_init($ERROR);
+  use IPTables::SubnetSkeleton;
+  
+  # Define the subnet CIDR splitting points
+  my @netmasks = (8, 18, 20, 22, 24, 26, 28);
+  
+  # Create two subnet object, IP source vs. destination matching
+  $subnet_src =
+     IPTables::SubnetSkeleton::new("shortname", "src", "filter", @netmasks);
+  $subnet_dst =
+     IPTables::SubnetSkeleton::new("shortname", "dst", "filter", @netmasks);
+  
+  # Connect subnet skeleton to build-in chain "FORWARD".
+  $subnet_src->connect_to("FORWARD");
+  $subnet_dst->connect_to("FORWARD");
+  
+  # Create a chain for a customer/user
+  my $userchain = "user42";
+  if ( ! $subnet_src->iptables_chain_exist("$userchain") ) {
+      $subnet_src->iptables_chain_new($userchain);
+  }
+  $subnet_src->iptables_insert("user42", "", "ACCEPT"); #Accept all traffic
+  
+  # SubnetSkeleton: Add a IP match that will jump to $userchain
+  my $IP = "10.0.0.42";
+  $subnet_src->insert_element("$IP", "$userchain");
+  $subnet_dst->insert_element("$IP", "$userchain");
+  
+  # Add an IP and remove its again
+  my $IP2 = "10.0.1.43";
+  $subnet_dst->insert_element("$IP", "$userchain");
+  $subnet_dst->disconnect_element("$IP", "$userchain");
+  
+  # Remember to commit iptables changes to kernel
+  $subnet_src->iptables_commit();
 
 
 =head1 ALGORITHM
 
- FIXME: PLEASE insert algorithm description from algorithm_SubnetSkeleton.apt.
-
-  ~/svn/dcu/trunk/documentation/technical/algorithm_SubnetSkeleton.apt
-
+ Algorithm description see:  doc/algorithm_SubnetSkeleton.apt
 
 =head1 DEPENDENCIES
 
@@ -580,7 +592,7 @@ L<IPTables::Interface>.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2006 by Jesper Dangaard Brouer.
+Copyright (C) 2006-2011 by Jesper Dangaard Brouer.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
