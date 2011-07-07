@@ -1,8 +1,39 @@
 
-SubnetSkeleton - Scalable iptables subnet based search tree for Perl
+= SubnetSkeleton - Scalable iptables subnet based search tree for Perl =
 
-== STATE ==
+== State ==
 
-The module is in the progress of being converted to a
-seperate/independent Perl module.  Thus, expect it still need some
-adjustment to work on you system ;-).
+The SubnetSkeleton module has been converted to an independent Perl
+module, in hope that people will find it useful, for solving
+'''iptables scalability problems.'''
+
+== Bonus ==
+
+This module also contains a wrapper module IPTables::Interface
+for IPTables::libiptc.
+
+== Links ==
+
+The code for this module is hosted at GitHub:
+
+ [https://github.com/netoptimizer/IPTables-SubnetSkeleton]
+
+Presentation: Making large iptables rulesets scale
+
+ [http://slidesha.re/hRTKSR]
+
+Depend on CPAN module IPTables::libiptc:
+ [http://search.cpan.org/perldoc?IPTables::libiptc]
+
+ Code: [https://github.com/netoptimizer/CPAN-IPTables-libiptc]
+
+
+
+== COPYRIGHT AND LICENCE ==
+
+Copyright (C) 2006-2011 by Jesper Dangaard Brouer <hawk@cpan.org>
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.

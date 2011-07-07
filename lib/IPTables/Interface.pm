@@ -753,14 +753,19 @@ IPTables::Interface - Perl style wrapper interface for IPTables::libiptc
 
 =head1 SYNOPSIS
 
+  use Log::Log4perl qw(:easy);
+  Log::Log4perl->easy_init($DEBUG);
+  
   use IPTables::Interface;
-
-  $table = IPTables::Interface::('filter');
-
-  $table->create_chain("badehat");
-
+  $table = IPTables::Interface::new('filter');
+  
+  my $chain = "chainname";
+  $table->create_chain($chain);
+  $table->iptables_do_command("-A $chain", "-s 10.0.0.42", "-j ACCEPT");
+  
   # Its important to commit/push-back the changes to the kernel
   $table->commit();
+
 
 =head1 DESCRIPTION
 
