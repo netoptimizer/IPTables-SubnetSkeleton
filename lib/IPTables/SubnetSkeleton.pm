@@ -1,11 +1,11 @@
-
 package IPTables::SubnetSkeleton;
 
 use strict;
 use warnings;
 use Carp;
 
-# Remember to set the Perl @INC correct at a higher level.
+# Net::IPAddress is such a small module, that we have included it in
+# this package.
 use Net::IPAddress;
 
 use IPTables::interface;
