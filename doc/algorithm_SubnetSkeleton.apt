@@ -1,0 +1,138 @@
+~~ -*-text-*-
+
+
+       -------------------------------------------------------
+			     DCU system:
+		      Subnet skeleton algorithm
+       -------------------------------------------------------
+		 Jesper Louis Andersen (jla@comx.dk)
+		 Jesper Dangaard Brouer (jdb@comx.dk)
+       -------------------------------------------------------
+        $LastChangedRevision: 653 $
+        $Date: 2008-09-10 19:51:52 +0200 (Wed, 10 Sep 2008) $
+       -------------------------------------------------------
+
+Introduction
+~~~~~~~~~~~~
+
+ This document describes the algorithm used for inserting individual
+ customer related rules into netfilter via iptables. There are certain
+ performance problems associated with this which needs to be
+ eliminated such that our system is not overloaded by doing work which
+ is non-needed.
+
+Problem description
+~~~~~~~~~~~~~~~~~~~
+
+ We have, when we are building rules to netfilter, a set of rules
+ which should apply to a certain source or destination IP address. The
+ logical step would be to insert a single rule via iptables into the
+ kernel adding it to some chain.
+
+ This approach is problematic for one reason: The matching becomes a
+ list of rules resulting in an O(n) running time searching for the
+ correct IP. Since we potentially match once per packet, this will
+ kill our DCU if we allow it to happen.
+
+Analysis
+~~~~~~~~
+
+ Most of the analysis have already been carried out by jdb@comx.dk in
+ other documents relating to the DCU project. We need to turn the
+ linear search into a tree search with O(log n) search time bounds. The
+ best thing we have to do this is the ability to match on a given
+ subnet.
+
+ Thus, we are going to divide our IP space by subnetworks and match
+ the address on subnetworks. Doing this recursively creates the tree
+ structure we want.
+
+Algorithm
+~~~~~~~~~
+
+ This section describes the algorithm from a language independent
+ perspective. We are ultimately going to implement this in perl, but
+ we need the language independent description first to guide our path.
+
+ Formally, let "<b0, b1, ..., bn>" be an ordered list of integers. The
+ list is to be ordered in an ascending fashion. These values we term
+ the <CIDR breaks> -- they are effectively the netmasks we use for
+ subnetting our network.
+
+ Basically the algorithm creates the tree by bit masking the IP with
+ these CIDR breaks.
+
+ Let <IP> be the IP address we wish to map. Our code is going to
+ support the function:
+
+------
+ insert_element(IP, TargetChain, ChainPrefix, Type, <b0, b1, ..., bn>)
+------
+
+ Inserting or connecting the <TargetChain>, according to the <IP>
+ address, into the subnet skeleton structure.  The <Type> determines
+ whether the subnet structure is based on source or destination
+ matching of the <IP> address.  The <ChainPrefix> is used name the
+ chains associated with this subnet skeleton structure.
+
+ Algorithm:
+ ~~~~~~~~~~
+
+ * 1. <<Initialize>>: POS = ChainPrefix_skeleton, i = 0.
+
+    This step initializes the algorithm by defining where we are and
+    which subnet we are searching.
+
+    Create the chain <ChainPrefix_skeleton> if it don't exists.
+
+    Goto 2.
+
+ * 2. <<Check termination>>:
+
+    The step checks if we are at the bottom of the tree and if we are,
+    proceeds to use the <IP> to connect the <TargetChain> into the
+    chain we are currently pointing at.
+
+    <If> bi == bn then:
+
+       ** Connect the <TargetChain> to the chain pointed to by <POS>.
+         (The <TargetChain> can either by connected by the source or
+         destination IP )
+
+       ** <End> the algorithm.
+
+       []
+
+    <else>, bi != bn. Goto 3.
+
+ * 3. <<Calculate subnet>>: Set SUBNET = subnet of <IP> mask <bi>.
+      Goto 4.
+
+   This step simply calculates a subnet from the IP address and the
+   CIDR mask <bi>. This is to be used to define chains.
+
+ * 4. <<Is subnet present?>>: If the chain ChainPrefix_SUBNET_bi
+      exists in the chain pointed to by POS, goto 6. Else, goto 5.
+
+   A simple check to see if the canonical name for the subnet exist in
+   the netfilter table. If not, we are going to create it, else we are
+   going enter it.
+
+ * 5. <<Create subnet chain>>: Create the chain <ChainPrefix_SUBNET_bi>
+      and add it to the chain POS. Goto 6
+
+   The adding, means a jump (target) rule in chain <POS> to chain
+   <ChainPrefix_SUBNET_bi> based on the SUBNET/bi match.
+
+   Whether the rule is a source or destination rule is determined by
+   the <Type> option.
+
+ * 6. <<Enter subnet>>: POS = ChainPrefix_SUBNET_bi, i = i + 1, goto 2.
+
+ []
+
+
+Implementation
+~~~~~~~~~~~~~~
+
+ See: lib/IPTables/SubnetSkeleton.pm
