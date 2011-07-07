@@ -1,6 +1,6 @@
-# IPTables::interface - Perl style wrapper interface for IPTables::libiptc
+# IPTables::Interface - Perl style wrapper interface for IPTables::libiptc
 
-package IPTables::interface;
+package IPTables::Interface;
 
 use strict;
 use warnings;
@@ -17,9 +17,9 @@ use Log::Log4perl qw(get_logger :levels);
 my $logger = get_logger(__PACKAGE__);
 
 # Locking system
-use DCU::lock;
+use IPTables::Interface::Lock;
 our $lock_base_name="iptables_cmd_lock";
-our $lock = DCU::lock::new("$lock_base_name"); # Lock object instans
+our $lock = IPTables::Interface::Lock::new("$lock_base_name"); # Lock object instans
 
 BEGIN {
      use Exporter ();
@@ -749,13 +749,13 @@ __END__
 
 =head1 NAME
 
-IPTables::interface - Perl style wrapper interface for IPTables::libiptc
+IPTables::Interface - Perl style wrapper interface for IPTables::libiptc
 
 =head1 SYNOPSIS
 
-  use IPTables::interface;
+  use IPTables::Interface;
 
-  $table = IPTables::interface::('filter');
+  $table = IPTables::Interface::('filter');
 
   $table->create_chain("badehat");
 
@@ -869,7 +869,7 @@ following helper function are implemented.
 L<IPTables::libiptc>,
 L<Log::Log4perl>,
 L<Time::HiRes>.
-L<DCU::lock>.
+L<IPTables::Interface::Lock>.
 
 
 =head1 SEE ALSO

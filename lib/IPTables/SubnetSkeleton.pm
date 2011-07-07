@@ -8,7 +8,7 @@ use Carp;
 # this package.
 use Net::IPAddress;
 
-use IPTables::interface;
+use IPTables::Interface;
 
 # Local module vars (that perhaps should be moved somewhere else).
 my $packageid=__PACKAGE__;
@@ -47,7 +47,7 @@ sub new
     }
 
     # Create a IPTables object and store it in this object.
-    my $ipt_obj = IPTables::interface::new($self->{'netfilter_table'});
+    my $ipt_obj = IPTables::Interface::new($self->{'netfilter_table'});
     $self->{'iptables_object'} = $ipt_obj;
 
     bless($self);
@@ -565,7 +565,7 @@ developed in order to cut down on the number of lookups.
 =head1 DEPENDENCIES
 
 L<IPTables::libiptc>,
-L<IPTables::interface>.
+L<IPTables::Interface>.
 
 =head1 AUTHORS
 

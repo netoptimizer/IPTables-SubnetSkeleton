@@ -13,6 +13,8 @@ my %attr = (
 	'Net::IPAddress'     => 0,
 	'Log::Log4perl'      => 0,
 	'IPTables::libiptc'  => 0,
+	'Time::HiRes'        => 0,
+	'IO::Handle'         => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'IPTables-SubnetSkeleton-*' },

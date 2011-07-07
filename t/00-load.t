@@ -5,7 +5,7 @@ use Test::More tests => 2;
 BEGIN {
     use_ok( 'IPTables::SubnetSkeleton' ) || print "Bail out!
 ";
-    use_ok( 'IPTables::interface' ) || print "Bail out!
+    use_ok( 'IPTables::Interface' ) || print "Bail out!
 ";
 }
 
