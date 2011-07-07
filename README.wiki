@@ -1,0 +1,8 @@
+
+SubnetSkeleton - Scalable iptables subnet based search tree for Perl
+
+== STATE ==
+
+The module is in the progress of being converted to a
+seperate/independent Perl module.  Thus, expect it still need some
+adjustment to work on you system ;-).
